@@ -117,6 +117,53 @@ function NewEvent() {
   );
 }
 
+import { useParams } from "react-router-dom";
+
+function EventDetail() {
+  const { id } = useParams();
+  const [item, setItem] = useState("");
+  const [event, setEvent] = useState(null);
+  const [items, setItems] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  useEffect(() => {
+    const events = JSON.parse(localStorage.getItem("events")) || [];
+    const selectedEvent = events[parseInt(id)];
+    if (selectedEvent) {
+      setEvent(selectedEvent);
+      setItems(selectedEvent.items || []);
+    }
+  }, [id]);
+
+  const handleAddItem = () => {
+    const updatedItems = [...items, { user: user?.username, item }];
+    setItems(updatedItems);
+    const events = JSON.parse(localStorage.getItem("events")) || [];
+    events[parseInt(id)].items = updatedItems;
+    localStorage.setItem("events", JSON.stringify(events));
+    setItem("");
+  };
+
+  if (!event) {
+    return <p>Evento no encontrado</p>;
+  }
+
+  return (
+    <div>
+      <h2>{event.title}</h2>
+      <h3>Qué voy a llevar</h3>
+      <input type="text" placeholder="Añadir algo" value={item} onChange={(e) => setItem(e.target.value)} />
+      <button onClick={handleAddItem}>Añadir</button>
+      <ul>
+        {items.map((itemObj, index) => (
+          <li key={index}>{itemObj.user}: {itemObj.item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
 function EventList() {
   const [events, setEvents] = useState([]);
   useEffect(() => {
@@ -128,7 +175,10 @@ function EventList() {
       <h2>Listado de Eventos</h2>
       <ul>
         {events.map((event, index) => (
-          <li key={index}>{event.title} - {event.date} en {event.location}</li>
+          <li key={index}>
+            {event.title} - {event.date} en {event.location}
+            <button onClick={() => window.location.href = `/events/${index}`}>Ver Detalle</button>
+          </li>
         ))}
       </ul>
       <button onClick={() => window.location.href = "/new-event"}>Crear Nuevo Evento</button>
@@ -165,6 +215,7 @@ function App() {
         <Route path="/profile" element={<Profile user={user} setUser={handleLogin} />} />
         <Route path="/events" element={<EventList />} />
         <Route path="/new-event" element={<NewEvent />} />
+        <Route path="/events/:id" element={<EventDetail />} />
       </Routes>
     </Router>
   );
