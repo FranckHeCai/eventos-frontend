@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
-
+import "./index.css";
 function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
