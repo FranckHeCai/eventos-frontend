@@ -164,6 +164,8 @@ function EventDetail() {
 }
 
 
+
+
 function EventList() {
   const [events, setEvents] = useState([]);
   useEffect(() => {
@@ -186,6 +188,20 @@ function EventList() {
   );
 }
 
+function Footer() {
+  return (
+    <footer>
+      <p>© {new Date().getFullYear()} LOS OPRESORES | 
+        <a href="/terms"> Términos</a> | 
+        <a href="/privacy"> Privacidad</a>
+      </p>
+      <p>¡Síguenos en redes sociales!</p>
+    </footer>
+  );
+}
+
+
+
 function App() {
   const [user, setUser] = useState(null);
 
@@ -206,9 +222,26 @@ function App() {
     localStorage.removeItem("user");
   };
 
+    
+
   return (
     <Router>
+      <div id="app">
       <Navbar user={user} onLogout={handleLogout} />
+       {/* Slider de imágenes */}
+       <div className="slider-container">
+        <div className="slider">
+          <div className="slide">
+            <img src="https://template.canva.com/EAGHLgkJxxE/1/0/1600w-a1LNJIiOVXM.jpg" alt="Slide 1" />
+          </div>
+          <div className="slide">
+            <img src="https://template.canva.com/EAF6dYsvIJs/5/0/1600w-RshTdVtF_mo.jpg" alt="Slide 2" />
+          </div>
+          <div className="slide">
+            <img src="https://template.canva.com/EAGM4dxaMkg/1/0/1600w-VFCf3WuPF0s.jpg" />
+          </div>
+        </div>
+      </div>
       <Routes>
         <Route path="/" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register onLogin={handleLogin} />} />
@@ -217,8 +250,12 @@ function App() {
         <Route path="/new-event" element={<NewEvent />} />
         <Route path="/events/:id" element={<EventDetail />} />
       </Routes>
+      </div>
+      
+      <Footer />
     </Router>
   );
 }
+
 
 export default App;
