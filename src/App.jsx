@@ -74,7 +74,7 @@ function Profile({ user, setUser }) {
   };
 
   return (
-    <div>
+    <div className="perfil">
       <h2>Perfil de Usuario</h2>
       <input type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
       <input type="text" placeholder="Apellidos" value={lastname} onChange={(e) => setLastname(e.target.value)} />
