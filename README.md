@@ -1,7 +1,7 @@
 # 🍽️ NocturneBites
 
 **NocturneBites** es una aplicación diseñada para **organizar cenas grupales** de forma rápida, divertida y moderna. Perfecta para eventos entre amigos, fiestas temáticas, y encuentros sociales donde cada participante puede colaborar activamente.
-
+![Image](https://github.com/user-attachments/assets/e3b45af8-6faf-4996-a5ba-799598dcebf9)
 ---
 
 ## ✨ ¿Qué puedes hacer con la app?
