@@ -36,7 +36,7 @@ La aplicación presenta un **diseño moderno y visualmente impactante**, con:
 
 ## 🚀 Tech Stack (opcional, puedes agregar más)
 
-- Frontend: React / Vue / Angular (según preferencia del grupo)
+- Frontend: React (según la preferencia del grupo)
 - Backend: Node.js / Axios
 - Estilos: CSS puro
 - Base de datos: dinaserver
