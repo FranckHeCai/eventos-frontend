@@ -2,31 +2,99 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-route
 import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import "./index.css";
+import axios from "axios";
+
+
 function Login({ onLogin }) {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const userExists = users.find(
-      (user) => user.username === username && user.password === password
-    );
-    if (userExists) {
-      onLogin(userExists);
+    try {
+      const response = await axios.post("http://localhost:3000/auth/login", {
+        email,
+        password,
+      });
+
+      const user = response.data;
+
+      onLogin(user); // Aquí puedes pasar token si tu API lo devuelve
+      localStorage.setItem("user", JSON.stringify(user));
       navigate("/profile");
-    } else {
-      alert("Usuario o contraseña incorrectos");
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Email o contraseña incorrectos");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        placeholder="Correo electrónico"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <input
+        type="password"
+        placeholder="Contraseña"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <button type="submit">Iniciar sesión</button>
+      <p>¿No tienes cuenta? <a href="/register">Regístrate</a></p>
+    </form>
+  );
+}
+
+
+function Register(onLogin ) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Verifica si ya existe un usuario con ese email o username
+      const { data: users } = await axios.get("http://localhost:3000/user");
+
+      const usernameExists = users.some((user) => user.username === username);
+      const emailExists = users.some((user) => user.email === email);
+
+      if (usernameExists || emailExists) {
+        alert("El usuario o correo ya están registrados");
+        return;
+      }
+
+      const newUser = { username, password, email };
+
+      const response = await axios.post("http://localhost:3000/user", newUser);
+      console.log("Usuario registrado:", response.data);
+
+        // ✅ PASO 2: Aquí justo después del registro
+    localStorage.setItem("user", JSON.stringify(response.data));
+    onLogin(response.data); // << ESTE es el paso clave
+    navigate("/profile");
+
+    } catch (error) {
+      console.error("Error registrando usuario:", error);
+      alert("No se pudo registrar el usuario");
     }
   };
 
   return (
     <div>
       {localStorage.getItem("user") ? (
-        <p>Ya has iniciado sesión.</p>
+        <p>Ya estás registrado e iniciado sesión.</p>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleRegister}>
           <input
             type="text"
             placeholder="Usuario"
@@ -34,55 +102,21 @@ function Login({ onLogin }) {
             onChange={(e) => setUsername(e.target.value)}
           />
           <input
+            type="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
             type="password"
             placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit">Iniciar sesión</button>
-          <p>¿No tienes cuenta? <a href="/register">Regístrate</a></p>
+          <button type="submit">Registrarse</button>
         </form>
       )}
     </div>
-  );
-}
-
-
-function Register({ onLogin }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    if (users.find((user) => user.username === username)) {
-      alert("El usuario ya existe");
-      return;
-    }
-    const newUser = { username, password };
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    onLogin(newUser);
-    navigate("/profile");
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Usuario"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit">Registrarse</button>
-    </form>
   );
 }
 
