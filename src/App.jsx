@@ -4,17 +4,20 @@ import Navbar from "./components/Navbar";
 import "./index.css";
 function Login({ onLogin }) {
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    const userExists = users.find((user) => user.username === username);
+    const userExists = users.find(
+      (user) => user.username === username && user.password === password
+    );
     if (userExists) {
       onLogin(userExists);
       navigate("/profile");
     } else {
-      alert("Usuario no registrado");
+      alert("Usuario o contraseña incorrectos");
     }
   };
 
@@ -24,7 +27,18 @@ function Login({ onLogin }) {
         <p>Ya has iniciado sesión.</p>
       ) : (
         <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Usuario"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <button type="submit">Iniciar sesión</button>
           <p>¿No tienes cuenta? <a href="/register">Regístrate</a></p>
         </form>
@@ -33,8 +47,10 @@ function Login({ onLogin }) {
   );
 }
 
+
 function Register({ onLogin }) {
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -44,7 +60,7 @@ function Register({ onLogin }) {
       alert("El usuario ya existe");
       return;
     }
-    const newUser = { username };
+    const newUser = { username, password };
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
     onLogin(newUser);
@@ -53,7 +69,18 @@ function Register({ onLogin }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" placeholder="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} />
+      <input
+        type="text"
+        placeholder="Usuario"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Contraseña"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
       <button type="submit">Registrarse</button>
     </form>
   );
