@@ -9,22 +9,30 @@ import "./index.css";
 // ----------------------------
 function Login({ onLogin }) {
   const [email, setEmail] = useState("");
+  const [username, setUsername] =  useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(username, password)
+    console.log(btoa(username + ":" + password))
     try {
-      const response = await axios.post("http://localhost:3000/auth/login", {
-        email,
+      const response = await axios.post("http://localhost:3000/auth/login", 
+        {
+        username,
         password,
-      });
-
-      const user = response.data;
-      localStorage.setItem("user", JSON.stringify(user));
+      }, {
+        
+      headers: {
+      "Content-Type": "application/json",
+      authorization: `Basic ${btoa(username + ":" + password)}`
+    },
+      })
+      console.log(response.data.user)
+      const user = response.data.user;
       onLogin(user);
       navigate("/profile");
     } catch (error) {
@@ -45,10 +53,10 @@ function Login({ onLogin }) {
   return (
     <form onSubmit={handleSubmit}>
       <input
-        type="email"
-        placeholder="Correo electrónico"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
         required
       />
       <input
