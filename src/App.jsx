@@ -4,6 +4,9 @@ import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
+import EventList from "./components/EventList";
+import EventDetail from "./components/EventDetail";
+import NewEvent from "./components/NewEvent";
 import "./index.css";
 
 function App() {
@@ -46,6 +49,10 @@ function App() {
         <Route path="/" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register onLogin={handleLogin} />} />
         <Route path="/profile" element={<Profile user={user} setUser={handleLogin} />} />
+        <Route path="/new-event" element={<NewEvent />} />
+        <Route path="/events" element={<EventList />} />
+        <Route path="/events/:id" element={<EventDetail />} />
+
       </Routes>
     </Router>
   );
